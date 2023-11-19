@@ -4,9 +4,13 @@ const bodyParser = require('body-parser');
 const {PORT} = require('./config/serverConfig');
 const app = express();
 //const {sendBasicEmail} = require('./services/email-service');
-const {createChannel} = require('./utils/messageQueue');
 const TicketController = require('./controllers/ticket-controller');
-//const db = require('./models/index');
+
+const {subscribeMessage , createChannel} = require('./utils/messageQueue');
+const {REMINDER_BINDING_KEY} = require('./config/serverConfig');
+
+const EmailService = require('./services/email-service');
+
 const jobs = require('./utils/job');
 const setupAndStartServer = async()=>{
    
@@ -15,6 +19,9 @@ const setupAndStartServer = async()=>{
 
     app.post('/api/v1/tickets' , TicketController.create)
     
+    const channel = await createChannel();
+    subscribeMessage(channel , EmailService.subscribeEvents , REMINDER_BINDING_KEY);
+
     app.listen(PORT , ()=>{
         console.log(`sever is running at ${PORT}`);
 
