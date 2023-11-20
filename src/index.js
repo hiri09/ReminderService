@@ -36,7 +36,7 @@ const setupAndStartServer = async()=>{
         //cron.schedule('*/2 * * * *', () => {
            // console.log('running a task every two minutes');
         //}); */
-        //jobs();
+        jobs();
     })
 }
 setupAndStartServer();
